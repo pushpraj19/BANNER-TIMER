@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,22 +7,9 @@
 
     <style>
         /* ---------- RESET ---------- */
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        body {
-            overflow: hidden;
-            background: #000;
-            font-family: Arial, sans-serif;
-        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; width: 100%; height: 100%; }
+        body { overflow: hidden; background: #000; font-family: Arial, sans-serif; }
 
         /* ---------- PHOTO CONTAINER ---------- */
         .photo-container {
@@ -32,7 +18,6 @@
             height: 100vh;
             overflow: hidden;
         }
-
         .photo {
             position: absolute;
             width: 100%;
@@ -51,10 +36,10 @@
             height: 48px;
             border: none;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255,255,255,0.85);
             cursor: pointer;
             z-index: 100;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
             transition: transform 0.2s, box-shadow 0.2s;
             overflow: hidden;
             padding: 0;
@@ -62,30 +47,25 @@
             align-items: center;
             justify-content: center;
         }
-
         .settings-btn:hover {
             transform: scale(1.08);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-
         .settings-btn img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-
         .settings-btn .fallback {
             display: none;
             font-size: 24px;
             font-weight: bold;
             color: #222;
         }
-
-        .settings-btn img.error~.fallback {
+        .settings-btn img.error ~ .fallback {
             display: block;
         }
-
         .settings-btn img.error {
             display: none;
         }
@@ -94,32 +74,27 @@
         #overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
             z-index: 999;
             backdrop-filter: blur(2px);
         }
-
         #settingsPanel {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(30, 30, 30, 0.96);
+            background: rgba(30,30,30,0.96);
             backdrop-filter: blur(12px);
             border-radius: 16px;
             padding: 28px 32px;
-            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 12px 50px rgba(0,0,0,0.8);
             z-index: 1000;
             min-width: 280px;
             color: #eee;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
         #settingsPanel h3 {
             margin: 0 0 18px 0;
             text-align: center;
@@ -127,7 +102,6 @@
             letter-spacing: 1px;
             font-size: 20px;
         }
-
         #settingsPanel label {
             display: flex;
             align-items: center;
@@ -135,7 +109,6 @@
             margin: 8px 0;
             gap: 14px;
         }
-
         #settingsPanel input[type="number"] {
             width: 64px;
             padding: 6px 8px;
@@ -146,7 +119,6 @@
             font-size: 14px;
             text-align: center;
         }
-
         #settingsPanel input[type="color"] {
             width: 44px;
             height: 38px;
@@ -155,7 +127,6 @@
             background: transparent;
             cursor: pointer;
         }
-
         #settingsPanel input[type="file"] {
             width: 100%;
             padding: 6px;
@@ -165,14 +136,18 @@
             color: #ddd;
             font-size: 13px;
         }
-
+        #settingsPanel input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #666;
+        }
         #settingsPanel .row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin: 6px 0;
         }
-
         #settingsPanel .row button {
             background: #444;
             border: none;
@@ -183,11 +158,9 @@
             font-size: 13px;
             transition: background 0.2s;
         }
-
         #settingsPanel .row button:hover {
             background: #666;
         }
-
         #settingsPanel .close-panel {
             background: transparent;
             border: none;
@@ -197,7 +170,6 @@
             padding: 0 6px;
             float: right;
         }
-
         #settingsPanel .close-panel:hover {
             color: #fff;
         }
@@ -216,10 +188,7 @@
             touch-action: none;
             will-change: left, top, transform;
         }
-
-        .timer-wrapper.dragging {
-            cursor: grabbing;
-        }
+        .timer-wrapper.dragging { cursor: grabbing; }
 
         .timer {
             display: flex;
@@ -229,13 +198,11 @@
             background: transparent;
             white-space: nowrap;
         }
-
         .group {
             display: flex;
             gap: 2px;
             background: transparent;
         }
-
         .separator {
             color: #000;
             font-size: 80px;
@@ -245,7 +212,6 @@
             display: flex;
             align-items: center;
         }
-
         .digit {
             position: relative;
             width: 48px;
@@ -253,7 +219,6 @@
             overflow: hidden;
             background: transparent;
         }
-
         .number {
             position: absolute;
             top: 0;
@@ -276,34 +241,17 @@
         .slide-out {
             animation: slideOut 0.25s ease-in forwards;
         }
-
         .slide-in {
             animation: slideIn 0.25s ease-out 0.1s forwards;
             opacity: 0;
         }
-
         @keyframes slideOut {
-            from {
-                transform: translateY(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100%); opacity: 0; }
         }
-
         @keyframes slideIn {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         /* Resize handles */
@@ -311,7 +259,7 @@
             position: absolute;
             width: 14px;
             height: 14px;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255,255,255,0.85);
             border: 2px solid #333;
             border-radius: 2px;
             z-index: 20;
@@ -319,581 +267,541 @@
             transition: opacity 0.2s;
             cursor: nwse-resize;
         }
-
-        .timer-wrapper:hover .handle {
-            opacity: 1;
-        }
-
-        .handle-tl {
-            top: -7px;
-            left: -7px;
-            cursor: nwse-resize;
-        }
-
-        .handle-tr {
-            top: -7px;
-            right: -7px;
-            cursor: nesw-resize;
-        }
-
-        .handle-bl {
-            bottom: -7px;
-            left: -7px;
-            cursor: nesw-resize;
-        }
-
-        .handle-br {
-            bottom: -7px;
-            right: -7px;
-            cursor: nwse-resize;
-        }
+        .timer-wrapper:hover .handle { opacity: 1; }
+        .handle-tl { top: -7px; left: -7px; cursor: nwse-resize; }
+        .handle-tr { top: -7px; right: -7px; cursor: nesw-resize; }
+        .handle-bl { bottom: -7px; left: -7px; cursor: nesw-resize; }
+        .handle-br { bottom: -7px; right: -7px; cursor: nwse-resize; }
 
         /* Mobile */
         @media (max-width: 600px) {
-            .timer {
-                gap: 4px;
-            }
-
-            .group {
-                gap: 1px;
-            }
-
-            .digit {
-                width: 34px;
-                height: 72px;
-            }
-
-            .number {
-                font-size: 56px;
-            }
-
-            .separator {
-                font-size: 56px;
-            }
-
-            .handle {
-                width: 10px;
-                height: 10px;
-            }
-
-            .settings-btn {
-                width: 40px;
-                height: 40px;
-                top: 14px;
-                right: 14px;
-            }
-
-            #settingsPanel {
-                min-width: 220px;
-                padding: 20px;
-            }
+            .timer { gap: 4px; }
+            .group { gap: 1px; }
+            .digit { width: 34px; height: 72px; }
+            .number { font-size: 56px; }
+            .separator { font-size: 56px; }
+            .handle { width: 10px; height: 10px; }
+            .settings-btn { width: 40px; height: 40px; top: 14px; right: 14px; }
+            #settingsPanel { min-width: 220px; padding: 20px; }
         }
-
         @media (max-width: 400px) {
-            .digit {
-                width: 28px;
-                height: 60px;
-            }
-
-            .number {
-                font-size: 46px;
-            }
-
-            .separator {
-                font-size: 46px;
-            }
+            .digit { width: 28px; height: 60px; }
+            .number { font-size: 46px; }
+            .separator { font-size: 46px; }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="photo-container">
+<div class="photo-container">
 
-        <!-- PHOTO (default) -->
-        <img src="photo.png" class="photo" id="bgPhoto" alt="Background" />
+    <!-- PHOTO (default) -->
+    <img src="photo.png" class="photo" id="bgPhoto" alt="Background" />
 
-        <!-- SETTINGS BUTTON – uses local setting.png -->
-        <button class="settings-btn" id="settingsBtn" title="Settings">
-            <img src="tticlogo.png" alt="Settings"
-                onerror="this.classList.add('error'); this.nextElementSibling.style.display='block';" />
-            <span class="fallback">⚙</span>
-        </button>
+    <!-- SETTINGS BUTTON – uses local setting.png -->
+    <button class="settings-btn" id="settingsBtn" title="Settings">
+        <img src="setting.png" alt="Settings"
+             onerror="this.classList.add('error'); this.nextElementSibling.style.display='block';" />
+        <span class="fallback">⚙</span>
+    </button>
 
-        <!-- TIMER WRAPPER -->
-        <div class="timer-wrapper" id="timerWrapper">
-            <div class="timer" id="timer">
-                <div class="group" id="hoursGroup">
-                    <div class="digit" id="h1"></div>
-                    <div class="digit" id="h2"></div>
-                </div>
-                <div class="separator" id="sep1">:</div>
-                <div class="group" id="minutesGroup">
-                    <div class="digit" id="m1"></div>
-                    <div class="digit" id="m2"></div>
-                </div>
-                <div class="separator" id="sep2">:</div>
-                <div class="group" id="secondsGroup">
-                    <div class="digit" id="s1"></div>
-                    <div class="digit" id="s2"></div>
-                </div>
+    <!-- TIMER WRAPPER -->
+    <div class="timer-wrapper" id="timerWrapper">
+        <div class="timer" id="timer">
+            <div class="group" id="hoursGroup">
+                <div class="digit" id="h1"></div>
+                <div class="digit" id="h2"></div>
             </div>
-
-            <!-- Resize handles -->
-            <div class="handle handle-tl" data-handle="tl"></div>
-            <div class="handle handle-tr" data-handle="tr"></div>
-            <div class="handle handle-bl" data-handle="bl"></div>
-            <div class="handle handle-br" data-handle="br"></div>
-        </div>
-
-        <!-- OVERLAY & SETTINGS PANEL -->
-        <div id="overlay"></div>
-        <div id="settingsPanel">
-            <button class="close-panel" id="closePanel">✕</button>
-            <h3>⚙ Edit Timer</h3>
-            <label>Hours <input type="number" id="editHours" min="0" max="99" value="0" /></label>
-            <label>Minutes <input type="number" id="editMinutes" min="0" max="59" value="5" /></label>
-            <label>Seconds <input type="number" id="editSeconds" min="0" max="59" value="0" /></label>
-            <div class="row">
-                <span>Color</span>
-                <input type="color" id="editColor" value="#000000" />
+            <div class="separator" id="sep1">:</div>
+            <div class="group" id="minutesGroup">
+                <div class="digit" id="m1"></div>
+                <div class="digit" id="m2"></div>
             </div>
-            <!-- Background image picker -->
-            <div class="row" style="flex-direction:column; align-items:stretch; gap:6px; margin-top:10px;">
-                <span style="font-size:14px;">Background Image</span>
-                <input type="file" id="bgFileInput" accept="image/*" />
-            </div>
-            <div class="row" style="margin-top:18px;">
-                <button id="applySettings">Apply Time & Color</button>
-                <button id="resetTimer">Reset to 5:00</button>
+            <div class="separator" id="sep2">:</div>
+            <div class="group" id="secondsGroup">
+                <div class="digit" id="s1"></div>
+                <div class="digit" id="s2"></div>
             </div>
         </div>
 
+        <!-- Resize handles -->
+        <div class="handle handle-tl" data-handle="tl"></div>
+        <div class="handle handle-tr" data-handle="tr"></div>
+        <div class="handle handle-bl" data-handle="bl"></div>
+        <div class="handle handle-br" data-handle="br"></div>
     </div>
 
-    <script>
-        // ============================================================
-        // TIMER LOGIC
-        // ============================================================
-        let currentColor = '#000000';
-        let hours = 0, minutes = 5, seconds = 0;
-        let remaining = hours * 3600 + minutes * 60 + seconds;
+    <!-- OVERLAY & SETTINGS PANEL -->
+    <div id="overlay"></div>
+    <div id="settingsPanel">
+        <button class="close-panel" id="closePanel">✕</button>
+        <h3>⚙ Edit Timer</h3>
+        <label>Hours <input type="number" id="editHours" min="0" max="99" value="0" /></label>
+        <label>Minutes <input type="number" id="editMinutes" min="0" max="59" value="5" /></label>
+        <label>Seconds <input type="number" id="editSeconds" min="0" max="59" value="0" /></label>
+        <div class="row">
+            <span>Color</span>
+            <input type="color" id="editColor" value="#000000" />
+        </div>
+        <!-- Background image picker -->
+        <div class="row" style="flex-direction:column; align-items:stretch; gap:6px; margin-top:10px;">
+            <span style="font-size:14px;">Background Image</span>
+            <input type="file" id="bgFileInput" accept="image/*" />
+        </div>
+        <!-- Show Timer checkbox -->
+        <div class="row" style="margin-top:12px; justify-content:flex-start; gap:12px;">
+            <label style="display:flex; align-items:center; gap:8px; margin:0; cursor:pointer;">
+                <span style="font-size:14px;">Show Timer</span>
+                <input type="checkbox" id="showTimerCheck" checked />
+            </label>
+        </div>
+        <div class="row" style="margin-top:18px;">
+            <button id="applySettings">Apply Time & Color</button>
+            <button id="resetTimer">Reset to 5:00</button>
+        </div>
+    </div>
 
-        const digits = {
-            h1: document.getElementById("h1"),
-            h2: document.getElementById("h2"),
-            m1: document.getElementById("m1"),
-            m2: document.getElementById("m2"),
-            s1: document.getElementById("s1"),
-            s2: document.getElementById("s2"),
-        };
-        let current = ["0", "0", "5", "0", "0", "0"];
+</div>
 
-        function createNumber(value) {
-            const el = document.createElement("div");
-            el.className = "number";
-            el.textContent = value;
-            el.style.color = currentColor;
-            return el;
-        }
+<script>
+    // ============================================================
+    // TIMER LOGIC
+    // ============================================================
+    let currentColor = '#000000';
+    let hours = 0, minutes = 5, seconds = 0;
+    let remaining = hours * 3600 + minutes * 60 + seconds;
 
-        function initializeDigit(element, value) {
-            element.innerHTML = "";
-            const num = createNumber(value);
+    const digits = {
+        h1: document.getElementById("h1"),
+        h2: document.getElementById("h2"),
+        m1: document.getElementById("m1"),
+        m2: document.getElementById("m2"),
+        s1: document.getElementById("s1"),
+        s2: document.getElementById("s2"),
+    };
+    let current = ["0","0","5","0","0","0"];
+
+    function createNumber(value) {
+        const el = document.createElement("div");
+        el.className = "number";
+        el.textContent = value;
+        el.style.color = currentColor;
+        return el;
+    }
+
+    function initializeDigit(element, value) {
+        element.innerHTML = "";
+        const num = createNumber(value);
+        num.style.opacity = '1';
+        num.style.transform = 'translateY(0)';
+        element.appendChild(num);
+    }
+
+    // Slide transition (countdown)
+    function slideDigit(element, oldValue, newValue) {
+        if (oldValue === newValue) return;
+        const oldNumber = element.querySelector(".number");
+        if (!oldNumber) {
+            const num = createNumber(newValue);
             num.style.opacity = '1';
             num.style.transform = 'translateY(0)';
+            element.innerHTML = '';
             element.appendChild(num);
+            return;
         }
+        const newNumber = createNumber(newValue);
+        newNumber.style.opacity = '0';
+        newNumber.style.transform = 'translateY(100%)';
+        element.appendChild(newNumber);
+        void newNumber.offsetWidth;
+        oldNumber.style.transition = 'transform 0.2s ease-in, opacity 0.2s ease-in';
+        oldNumber.style.transform = 'translateY(-100%)';
+        oldNumber.style.opacity = '0';
+        setTimeout(() => {
+            newNumber.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
+            newNumber.style.transform = 'translateY(0)';
+            newNumber.style.opacity = '1';
+        }, 80);
+        setTimeout(() => {
+            if (oldNumber.parentNode) oldNumber.remove();
+        }, 350);
+    }
 
-        // Slide transition (countdown)
-        function slideDigit(element, oldValue, newValue) {
-            if (oldValue === newValue) return;
-            const oldNumber = element.querySelector(".number");
-            if (!oldNumber) {
-                const num = createNumber(newValue);
-                num.style.opacity = '1';
-                num.style.transform = 'translateY(0)';
-                element.innerHTML = '';
-                element.appendChild(num);
-                return;
-            }
-            const newNumber = createNumber(newValue);
-            newNumber.style.opacity = '0';
-            newNumber.style.transform = 'translateY(100%)';
-            element.appendChild(newNumber);
-            void newNumber.offsetWidth;
-            oldNumber.style.transition = 'transform 0.2s ease-in, opacity 0.2s ease-in';
-            oldNumber.style.transform = 'translateY(-100%)';
-            oldNumber.style.opacity = '0';
-            setTimeout(() => {
-                newNumber.style.transition = 'transform 0.25s ease-out, opacity 0.25s ease-out';
-                newNumber.style.transform = 'translateY(0)';
-                newNumber.style.opacity = '1';
-            }, 80);
-            setTimeout(() => {
-                if (oldNumber.parentNode) oldNumber.remove();
-            }, 350);
-        }
-
-        // Hard set (no animation) – for settings apply & tab visibility fix
-        function hardSetDisplay() {
-            const values = getValues();
-            const keys = Object.keys(digits);
-            keys.forEach((key, i) => {
-                const element = digits[key];
-                element.innerHTML = '';
-                const num = createNumber(values[i]);
-                num.style.opacity = '1';
-                num.style.transform = 'translateY(0)';
-                num.style.transition = 'none';
-                element.appendChild(num);
-            });
-            current = values;
-            updateVisibility();
-            measureNaturalSize();
-        }
-
-        function getValues() {
-            const h = Math.floor(remaining / 3600);
-            const m = Math.floor((remaining % 3600) / 60);
-            const s = remaining % 60;
-            return [
-                String(Math.floor(h / 10)), String(h % 10),
-                String(Math.floor(m / 10)), String(m % 10),
-                String(Math.floor(s / 10)), String(s % 10)
-            ];
-        }
-
-        function updateDisplay() {
-            const values = getValues();
-            const keys = Object.keys(digits);
-            keys.forEach((key, i) => {
-                slideDigit(digits[key], current[i], values[i]);
-            });
-            current = values;
-            updateVisibility();
-            measureNaturalSize();
-        }
-
-        function updateVisibility() {
-            const h = Math.floor(remaining / 3600);
-            const m = Math.floor((remaining % 3600) / 60);
-            document.getElementById('hoursGroup').style.display = (h > 0) ? 'flex' : 'none';
-            document.getElementById('sep1').style.display = (h > 0) ? 'flex' : 'none';
-            document.getElementById('minutesGroup').style.display = (h > 0 || m > 0) ? 'flex' : 'none';
-            document.getElementById('sep2').style.display = (h > 0 || m > 0) ? 'flex' : 'none';
-        }
-
-        function applyColorToAll(color) {
-            currentColor = color;
-            document.querySelectorAll('.number, .separator').forEach(el => el.style.color = color);
-        }
-
-        function setTime(h, m, s, animate = true) {
-            hours = Math.min(99, Math.max(0, h));
-            minutes = Math.min(59, Math.max(0, m));
-            seconds = Math.min(59, Math.max(0, s));
-            remaining = hours * 3600 + minutes * 60 + seconds;
-            if (animate) updateDisplay();
-            else hardSetDisplay();
-        }
-
-        // Init
-        const initValues = getValues();
+    // Hard set (no animation) – for settings apply & tab visibility fix
+    function hardSetDisplay() {
+        const values = getValues();
         const keys = Object.keys(digits);
-        keys.forEach((key, i) => initializeDigit(digits[key], initValues[i]));
-        current = initValues;
+        keys.forEach((key, i) => {
+            const element = digits[key];
+            element.innerHTML = '';
+            const num = createNumber(values[i]);
+            num.style.opacity = '1';
+            num.style.transform = 'translateY(0)';
+            num.style.transition = 'none';
+            element.appendChild(num);
+        });
+        current = values;
         updateVisibility();
+        measureNaturalSize();
+    }
 
-        // Countdown
-        setInterval(() => {
-            if (remaining > 0) {
-                remaining--;
-                updateDisplay();
-            }
-        }, 1000);
+    function getValues() {
+        const h = Math.floor(remaining / 3600);
+        const m = Math.floor((remaining % 3600) / 60);
+        const s = remaining % 60;
+        return [
+            String(Math.floor(h / 10)), String(h % 10),
+            String(Math.floor(m / 10)), String(m % 10),
+            String(Math.floor(s / 10)), String(s % 10)
+        ];
+    }
 
-        // Fix overlap on tab switch
-        document.addEventListener('visibilitychange', function () {
-            if (!document.hidden) {
-                hardSetDisplay();
-                applyColorToAll(currentColor);
-            }
+    function updateDisplay() {
+        const values = getValues();
+        const keys = Object.keys(digits);
+        keys.forEach((key, i) => {
+            slideDigit(digits[key], current[i], values[i]);
         });
+        current = values;
+        updateVisibility();
+        measureNaturalSize();
+    }
 
-        // ============================================================
-        // BACKGROUND IMAGE PICKER
-        // ============================================================
-        const bgFileInput = document.getElementById('bgFileInput');
-        const bgPhoto = document.getElementById('bgPhoto');
+    function updateVisibility() {
+        const h = Math.floor(remaining / 3600);
+        const m = Math.floor((remaining % 3600) / 60);
+        document.getElementById('hoursGroup').style.display = (h > 0) ? 'flex' : 'none';
+        document.getElementById('sep1').style.display = (h > 0) ? 'flex' : 'none';
+        document.getElementById('minutesGroup').style.display = (h > 0 || m > 0) ? 'flex' : 'none';
+        document.getElementById('sep2').style.display = (h > 0 || m > 0) ? 'flex' : 'none';
+    }
 
-        bgFileInput.addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (ev) {
-                    bgPhoto.src = ev.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+    function applyColorToAll(color) {
+        currentColor = color;
+        document.querySelectorAll('.number, .separator').forEach(el => el.style.color = color);
+    }
 
-        // ============================================================
-        // DRAG & RESIZE LOGIC (condensed for readability)
-        // ============================================================
-        const wrapper = document.getElementById("timerWrapper");
-        let isDragging = false, isPositioned = false, offsetX = 0, offsetY = 0;
+    function setTime(h, m, s, animate = true) {
+        hours = Math.min(99, Math.max(0, h));
+        minutes = Math.min(59, Math.max(0, m));
+        seconds = Math.min(59, Math.max(0, s));
+        remaining = hours * 3600 + minutes * 60 + seconds;
+        if (animate) updateDisplay();
+        else hardSetDisplay();
+    }
 
-        function getContainerRect() { return document.querySelector(".photo-container").getBoundingClientRect(); }
-        function getWrapperRect() { return wrapper.getBoundingClientRect(); }
+    // Init
+    const initValues = getValues();
+    const keys = Object.keys(digits);
+    keys.forEach((key, i) => initializeDigit(digits[key], initValues[i]));
+    current = initValues;
+    updateVisibility();
 
-        function switchToPixelPosition() {
-            const cRect = getContainerRect(), wRect = getWrapperRect();
-            wrapper.style.left = (wRect.left - cRect.left) + "px";
-            wrapper.style.top = (wRect.top - cRect.top) + "px";
-            const scale = parseFloat(wrapper.dataset.scale) || 1;
+    // Countdown
+    setInterval(() => {
+        if (remaining > 0) {
+            remaining--;
+            updateDisplay();
+        }
+    }, 1000);
+
+    // Fix overlap on tab switch
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            hardSetDisplay();
+            applyColorToAll(currentColor);
+        }
+    });
+
+    // ============================================================
+    // SHOW / HIDE TIMER
+    // ============================================================
+    const timerWrapper = document.getElementById('timerWrapper');
+    const showTimerCheck = document.getElementById('showTimerCheck');
+
+    // On load, apply checkbox state
+    if (!showTimerCheck.checked) {
+        timerWrapper.style.display = 'none';
+    }
+
+    showTimerCheck.addEventListener('change', function() {
+        timerWrapper.style.display = this.checked ? '' : 'none';
+    });
+
+    // ============================================================
+    // BACKGROUND IMAGE PICKER
+    // ============================================================
+    const bgFileInput = document.getElementById('bgFileInput');
+    const bgPhoto = document.getElementById('bgPhoto');
+
+    bgFileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                bgPhoto.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // ============================================================
+    // DRAG & RESIZE LOGIC (condensed for readability)
+    // ============================================================
+    const wrapper = document.getElementById("timerWrapper");
+    let isDragging = false, isPositioned = false, offsetX = 0, offsetY = 0;
+
+    function getContainerRect() { return document.querySelector(".photo-container").getBoundingClientRect(); }
+    function getWrapperRect() { return wrapper.getBoundingClientRect(); }
+
+    function switchToPixelPosition() {
+        const cRect = getContainerRect(), wRect = getWrapperRect();
+        wrapper.style.left = (wRect.left - cRect.left) + "px";
+        wrapper.style.top = (wRect.top - cRect.top) + "px";
+        const scale = parseFloat(wrapper.dataset.scale) || 1;
+        wrapper.style.transform = `scale(${scale})`;
+        wrapper.style.transformOrigin = 'top left';
+        isPositioned = true;
+    }
+
+    function getPointerCoords(e) {
+        if (e.touches && e.touches.length) return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+        if (e.changedTouches && e.changedTouches.length) return { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY };
+        return { clientX: e.clientX, clientY: e.clientY };
+    }
+
+    // Move
+    wrapper.addEventListener("mousedown", function(e) {
+        if (e.target.closest('.handle')) return;
+        e.preventDefault();
+        const coords = getPointerCoords(e);
+        if (!coords) return;
+        if (!isPositioned) switchToPixelPosition();
+        const wRect = getWrapperRect();
+        offsetX = coords.clientX - wRect.left;
+        offsetY = coords.clientY - wRect.top;
+        isDragging = true;
+        wrapper.classList.add("dragging");
+    });
+    document.addEventListener("mousemove", function(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const coords = getPointerCoords(e);
+        if (!coords) return;
+        const cRect = getContainerRect();
+        wrapper.style.left = (coords.clientX - cRect.left - offsetX) + "px";
+        wrapper.style.top = (coords.clientY - cRect.top - offsetY) + "px";
+    });
+    document.addEventListener("mouseup", function() {
+        if (isDragging) { isDragging = false; wrapper.classList.remove("dragging"); }
+    });
+
+    // Resize
+    let isResizing = false, resizeHandle = null, startScale = 1, fixedX = 0, fixedY = 0, startMX = 0, startMY = 0;
+    let naturalW = 0, naturalH = 0;
+
+    function measureNaturalSize() {
+        const scale = parseFloat(wrapper.dataset.scale) || 1;
+        wrapper.style.transform = 'scale(1)';
+        requestAnimationFrame(() => {
+            const rect = wrapper.getBoundingClientRect();
+            naturalW = rect.width; naturalH = rect.height;
+            wrapper.dataset.naturalW = naturalW;
+            wrapper.dataset.naturalH = naturalH;
             wrapper.style.transform = `scale(${scale})`;
-            wrapper.style.transformOrigin = 'top left';
-            isPositioned = true;
-        }
+        });
+    }
+    setTimeout(measureNaturalSize, 100);
 
-        function getPointerCoords(e) {
-            if (e.touches && e.touches.length) return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
-            if (e.changedTouches && e.changedTouches.length) return { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY };
-            return { clientX: e.clientX, clientY: e.clientY };
-        }
-
-        // Move
-        wrapper.addEventListener("mousedown", function (e) {
-            if (e.target.closest('.handle')) return;
-            e.preventDefault();
-            const coords = getPointerCoords(e);
-            if (!coords) return;
+    document.querySelectorAll('.handle').forEach(h => {
+        h.addEventListener("mousedown", function(e) {
+            e.preventDefault(); e.stopPropagation();
             if (!isPositioned) switchToPixelPosition();
-            const wRect = getWrapperRect();
-            offsetX = coords.clientX - wRect.left;
-            offsetY = coords.clientY - wRect.top;
-            isDragging = true;
+            const rect = wrapper.getBoundingClientRect();
+            const cRect = getContainerRect();
+            const scale = parseFloat(wrapper.dataset.scale) || 1;
+            const nW = parseFloat(wrapper.dataset.naturalW) || rect.width / scale;
+            const nH = parseFloat(wrapper.dataset.naturalH) || rect.height / scale;
+            naturalW = nW; naturalH = nH;
+            const type = this.dataset.handle;
+            resizeHandle = type;
+            startScale = scale;
+            const wLeft = parseFloat(wrapper.style.left) || (rect.left - cRect.left);
+            const wTop = parseFloat(wrapper.style.top) || (rect.top - cRect.top);
+            const w = rect.width, h = rect.height;
+            if (type === 'tl') { fixedX = wLeft + w; fixedY = wTop + h; }
+            else if (type === 'tr') { fixedX = wLeft; fixedY = wTop + h; }
+            else if (type === 'bl') { fixedX = wLeft + w; fixedY = wTop; }
+            else if (type === 'br') { fixedX = wLeft; fixedY = wTop; }
+            const coords = getPointerCoords(e);
+            startMX = coords.clientX - cRect.left;
+            startMY = coords.clientY - cRect.top;
+            isResizing = true;
             wrapper.classList.add("dragging");
         });
-        document.addEventListener("mousemove", function (e) {
-            if (!isDragging) return;
+        h.addEventListener("touchstart", function(e) {
             e.preventDefault();
-            const coords = getPointerCoords(e);
-            if (!coords) return;
+            if (!isPositioned) switchToPixelPosition();
+            const rect = wrapper.getBoundingClientRect();
             const cRect = getContainerRect();
-            wrapper.style.left = (coords.clientX - cRect.left - offsetX) + "px";
-            wrapper.style.top = (coords.clientY - cRect.top - offsetY) + "px";
-        });
-        document.addEventListener("mouseup", function () {
-            if (isDragging) { isDragging = false; wrapper.classList.remove("dragging"); }
-        });
-
-        // Resize
-        let isResizing = false, resizeHandle = null, startScale = 1, fixedX = 0, fixedY = 0, startMX = 0, startMY = 0;
-        let naturalW = 0, naturalH = 0;
-
-        function measureNaturalSize() {
             const scale = parseFloat(wrapper.dataset.scale) || 1;
-            wrapper.style.transform = 'scale(1)';
-            requestAnimationFrame(() => {
-                const rect = wrapper.getBoundingClientRect();
-                naturalW = rect.width; naturalH = rect.height;
-                wrapper.dataset.naturalW = naturalW;
-                wrapper.dataset.naturalH = naturalH;
-                wrapper.style.transform = `scale(${scale})`;
-            });
-        }
-        setTimeout(measureNaturalSize, 100);
-
-        document.querySelectorAll('.handle').forEach(h => {
-            h.addEventListener("mousedown", function (e) {
-                e.preventDefault(); e.stopPropagation();
-                if (!isPositioned) switchToPixelPosition();
-                const rect = wrapper.getBoundingClientRect();
-                const cRect = getContainerRect();
-                const scale = parseFloat(wrapper.dataset.scale) || 1;
-                const nW = parseFloat(wrapper.dataset.naturalW) || rect.width / scale;
-                const nH = parseFloat(wrapper.dataset.naturalH) || rect.height / scale;
-                naturalW = nW; naturalH = nH;
-                const type = this.dataset.handle;
-                resizeHandle = type;
-                startScale = scale;
-                const wLeft = parseFloat(wrapper.style.left) || (rect.left - cRect.left);
-                const wTop = parseFloat(wrapper.style.top) || (rect.top - cRect.top);
-                const w = rect.width, h = rect.height;
-                if (type === 'tl') { fixedX = wLeft + w; fixedY = wTop + h; }
-                else if (type === 'tr') { fixedX = wLeft; fixedY = wTop + h; }
-                else if (type === 'bl') { fixedX = wLeft + w; fixedY = wTop; }
-                else if (type === 'br') { fixedX = wLeft; fixedY = wTop; }
-                const coords = getPointerCoords(e);
-                startMX = coords.clientX - cRect.left;
-                startMY = coords.clientY - cRect.top;
-                isResizing = true;
-                wrapper.classList.add("dragging");
-            });
-            h.addEventListener("touchstart", function (e) {
-                e.preventDefault();
-                if (!isPositioned) switchToPixelPosition();
-                const rect = wrapper.getBoundingClientRect();
-                const cRect = getContainerRect();
-                const scale = parseFloat(wrapper.dataset.scale) || 1;
-                const nW = parseFloat(wrapper.dataset.naturalW) || rect.width / scale;
-                const nH = parseFloat(wrapper.dataset.naturalH) || rect.height / scale;
-                naturalW = nW; naturalH = nH;
-                const type = this.dataset.handle;
-                resizeHandle = type;
-                startScale = scale;
-                const wLeft = parseFloat(wrapper.style.left) || (rect.left - cRect.left);
-                const wTop = parseFloat(wrapper.style.top) || (rect.top - cRect.top);
-                const w = rect.width, h = rect.height;
-                if (type === 'tl') { fixedX = wLeft + w; fixedY = wTop + h; }
-                else if (type === 'tr') { fixedX = wLeft; fixedY = wTop + h; }
-                else if (type === 'bl') { fixedX = wLeft + w; fixedY = wTop; }
-                else if (type === 'br') { fixedX = wLeft; fixedY = wTop; }
-                const coords = getPointerCoords(e);
-                startMX = coords.clientX - cRect.left;
-                startMY = coords.clientY - cRect.top;
-                isResizing = true;
-                wrapper.classList.add("dragging");
-            }, { passive: false });
-        });
-
-        document.addEventListener("mousemove", function (e) {
-            if (!isResizing) return;
-            e.preventDefault();
+            const nW = parseFloat(wrapper.dataset.naturalW) || rect.width / scale;
+            const nH = parseFloat(wrapper.dataset.naturalH) || rect.height / scale;
+            naturalW = nW; naturalH = nH;
+            const type = this.dataset.handle;
+            resizeHandle = type;
+            startScale = scale;
+            const wLeft = parseFloat(wrapper.style.left) || (rect.left - cRect.left);
+            const wTop = parseFloat(wrapper.style.top) || (rect.top - cRect.top);
+            const w = rect.width, h = rect.height;
+            if (type === 'tl') { fixedX = wLeft + w; fixedY = wTop + h; }
+            else if (type === 'tr') { fixedX = wLeft; fixedY = wTop + h; }
+            else if (type === 'bl') { fixedX = wLeft + w; fixedY = wTop; }
+            else if (type === 'br') { fixedX = wLeft; fixedY = wTop; }
             const coords = getPointerCoords(e);
-            if (!coords) return;
-            const cRect = getContainerRect();
-            const mx = coords.clientX - cRect.left, my = coords.clientY - cRect.top;
-            let dx, dy;
-            if (resizeHandle === 'tl') { dx = fixedX - mx; dy = fixedY - my; }
-            else if (resizeHandle === 'tr') { dx = mx - fixedX; dy = fixedY - my; }
-            else if (resizeHandle === 'bl') { dx = fixedX - mx; dy = my - fixedY; }
-            else if (resizeHandle === 'br') { dx = mx - fixedX; dy = my - fixedY; }
-            let initDx, initDy;
-            if (resizeHandle === 'tl') { initDx = fixedX - startMX; initDy = fixedY - startMY; }
-            else if (resizeHandle === 'tr') { initDx = startMX - fixedX; initDy = fixedY - startMY; }
-            else if (resizeHandle === 'bl') { initDx = fixedX - startMX; initDy = startMY - fixedY; }
-            else if (resizeHandle === 'br') { initDx = startMX - fixedX; initDy = startMY - fixedY; }
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const initDist = Math.sqrt(initDx * initDx + initDy * initDy);
-            if (initDist === 0) return;
-            let newScale = startScale * (dist / initDist);
-            newScale = Math.max(0.2, Math.min(5, newScale));
-            wrapper.style.transform = `scale(${newScale})`;
-            wrapper.dataset.scale = newScale;
-            const nW = naturalW * newScale, nH = naturalH * newScale;
-            let newLeft, newTop;
-            if (resizeHandle === 'tl') { newLeft = fixedX - nW; newTop = fixedY - nH; }
-            else if (resizeHandle === 'tr') { newLeft = fixedX; newTop = fixedY - nH; }
-            else if (resizeHandle === 'bl') { newLeft = fixedX - nW; newTop = fixedY; }
-            else if (resizeHandle === 'br') { newLeft = fixedX; newTop = fixedY; }
-            wrapper.style.left = newLeft + "px";
-            wrapper.style.top = newTop + "px";
-        });
-        document.addEventListener("mouseup", function () {
-            if (isResizing) { isResizing = false; wrapper.classList.remove("dragging"); resizeHandle = null; }
-        });
-        document.addEventListener("touchmove", function (e) {
-            if (!isResizing) return;
-            e.preventDefault();
-            const coords = getPointerCoords(e);
-            if (!coords) return;
-            const cRect = getContainerRect();
-            const mx = coords.clientX - cRect.left, my = coords.clientY - cRect.top;
-            let dx, dy;
-            if (resizeHandle === 'tl') { dx = fixedX - mx; dy = fixedY - my; }
-            else if (resizeHandle === 'tr') { dx = mx - fixedX; dy = fixedY - my; }
-            else if (resizeHandle === 'bl') { dx = fixedX - mx; dy = my - fixedY; }
-            else if (resizeHandle === 'br') { dx = mx - fixedX; dy = my - fixedY; }
-            let initDx, initDy;
-            if (resizeHandle === 'tl') { initDx = fixedX - startMX; initDy = fixedY - startMY; }
-            else if (resizeHandle === 'tr') { initDx = startMX - fixedX; initDy = fixedY - startMY; }
-            else if (resizeHandle === 'bl') { initDx = fixedX - startMX; initDy = startMY - fixedY; }
-            else if (resizeHandle === 'br') { initDx = startMX - fixedX; initDy = startMY - fixedY; }
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const initDist = Math.sqrt(initDx * initDx + initDy * initDy);
-            if (initDist === 0) return;
-            let newScale = startScale * (dist / initDist);
-            newScale = Math.max(0.2, Math.min(5, newScale));
-            wrapper.style.transform = `scale(${newScale})`;
-            wrapper.dataset.scale = newScale;
-            const nW = naturalW * newScale, nH = naturalH * newScale;
-            let newLeft, newTop;
-            if (resizeHandle === 'tl') { newLeft = fixedX - nW; newTop = fixedY - nH; }
-            else if (resizeHandle === 'tr') { newLeft = fixedX; newTop = fixedY - nH; }
-            else if (resizeHandle === 'bl') { newLeft = fixedX - nW; newTop = fixedY; }
-            else if (resizeHandle === 'br') { newLeft = fixedX; newTop = fixedY; }
-            wrapper.style.left = newLeft + "px";
-            wrapper.style.top = newTop + "px";
+            startMX = coords.clientX - cRect.left;
+            startMY = coords.clientY - cRect.top;
+            isResizing = true;
+            wrapper.classList.add("dragging");
         }, { passive: false });
-        document.addEventListener("touchend", function () {
-            if (isResizing) { isResizing = false; wrapper.classList.remove("dragging"); resizeHandle = null; }
-        });
-        document.addEventListener("touchcancel", function () {
-            if (isResizing) { isResizing = false; wrapper.classList.remove("dragging"); resizeHandle = null; }
-        });
+    });
 
-        // Double-click reset position
-        wrapper.addEventListener("dblclick", function () {
-            wrapper.style.left = "50%";
-            wrapper.style.top = "50%";
-            wrapper.style.transform = "translate(-50%, -50%) scale(1)";
-            wrapper.dataset.scale = 1;
-            isPositioned = false;
-            wrapper.classList.remove("dragging");
-            isDragging = false;
-            isResizing = false;
-            measureNaturalSize();
-        });
-        wrapper.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("mousemove", function(e) {
+        if (!isResizing) return;
+        e.preventDefault();
+        const coords = getPointerCoords(e);
+        if (!coords) return;
+        const cRect = getContainerRect();
+        const mx = coords.clientX - cRect.left, my = coords.clientY - cRect.top;
+        let dx, dy;
+        if (resizeHandle === 'tl') { dx = fixedX - mx; dy = fixedY - my; }
+        else if (resizeHandle === 'tr') { dx = mx - fixedX; dy = fixedY - my; }
+        else if (resizeHandle === 'bl') { dx = fixedX - mx; dy = my - fixedY; }
+        else if (resizeHandle === 'br') { dx = mx - fixedX; dy = my - fixedY; }
+        let initDx, initDy;
+        if (resizeHandle === 'tl') { initDx = fixedX - startMX; initDy = fixedY - startMY; }
+        else if (resizeHandle === 'tr') { initDx = startMX - fixedX; initDy = fixedY - startMY; }
+        else if (resizeHandle === 'bl') { initDx = fixedX - startMX; initDy = startMY - fixedY; }
+        else if (resizeHandle === 'br') { initDx = startMX - fixedX; initDy = startMY - fixedY; }
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const initDist = Math.sqrt(initDx*initDx + initDy*initDy);
+        if (initDist === 0) return;
+        let newScale = startScale * (dist / initDist);
+        newScale = Math.max(0.2, Math.min(5, newScale));
+        wrapper.style.transform = `scale(${newScale})`;
+        wrapper.dataset.scale = newScale;
+        const nW = naturalW * newScale, nH = naturalH * newScale;
+        let newLeft, newTop;
+        if (resizeHandle === 'tl') { newLeft = fixedX - nW; newTop = fixedY - nH; }
+        else if (resizeHandle === 'tr') { newLeft = fixedX; newTop = fixedY - nH; }
+        else if (resizeHandle === 'bl') { newLeft = fixedX - nW; newTop = fixedY; }
+        else if (resizeHandle === 'br') { newLeft = fixedX; newTop = fixedY; }
+        wrapper.style.left = newLeft + "px";
+        wrapper.style.top = newTop + "px";
+    });
+    document.addEventListener("mouseup", function() {
+        if (isResizing) { isResizing = false; wrapper.classList.remove("dragging"); resizeHandle = null; }
+    });
+    document.addEventListener("touchmove", function(e) {
+        if (!isResizing) return;
+        e.preventDefault();
+        const coords = getPointerCoords(e);
+        if (!coords) return;
+        const cRect = getContainerRect();
+        const mx = coords.clientX - cRect.left, my = coords.clientY - cRect.top;
+        let dx, dy;
+        if (resizeHandle === 'tl') { dx = fixedX - mx; dy = fixedY - my; }
+        else if (resizeHandle === 'tr') { dx = mx - fixedX; dy = fixedY - my; }
+        else if (resizeHandle === 'bl') { dx = fixedX - mx; dy = my - fixedY; }
+        else if (resizeHandle === 'br') { dx = mx - fixedX; dy = my - fixedY; }
+        let initDx, initDy;
+        if (resizeHandle === 'tl') { initDx = fixedX - startMX; initDy = fixedY - startMY; }
+        else if (resizeHandle === 'tr') { initDx = startMX - fixedX; initDy = fixedY - startMY; }
+        else if (resizeHandle === 'bl') { initDx = fixedX - startMX; initDy = startMY - fixedY; }
+        else if (resizeHandle === 'br') { initDx = startMX - fixedX; initDy = startMY - fixedY; }
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const initDist = Math.sqrt(initDx*initDx + initDy*initDy);
+        if (initDist === 0) return;
+        let newScale = startScale * (dist / initDist);
+        newScale = Math.max(0.2, Math.min(5, newScale));
+        wrapper.style.transform = `scale(${newScale})`;
+        wrapper.dataset.scale = newScale;
+        const nW = naturalW * newScale, nH = naturalH * newScale;
+        let newLeft, newTop;
+        if (resizeHandle === 'tl') { newLeft = fixedX - nW; newTop = fixedY - nH; }
+        else if (resizeHandle === 'tr') { newLeft = fixedX; newTop = fixedY - nH; }
+        else if (resizeHandle === 'bl') { newLeft = fixedX - nW; newTop = fixedY; }
+        else if (resizeHandle === 'br') { newLeft = fixedX; newTop = fixedY; }
+        wrapper.style.left = newLeft + "px";
+        wrapper.style.top = newTop + "px";
+    }, { passive: false });
+    document.addEventListener("touchend", function() {
+        if (isResizing) { isResizing = false; wrapper.classList.remove("dragging"); resizeHandle = null; }
+    });
+    document.addEventListener("touchcancel", function() {
+        if (isResizing) { isResizing = false; wrapper.classList.remove("dragging"); resizeHandle = null; }
+    });
 
-        // ============================================================
-        // SETTINGS PANEL CONTROLS
-        // ============================================================
-        const settingsBtn = document.getElementById('settingsBtn');
-        const panel = document.getElementById('settingsPanel');
-        const overlay = document.getElementById('overlay');
-        const closePanel = document.getElementById('closePanel');
-        const editH = document.getElementById('editHours');
-        const editM = document.getElementById('editMinutes');
-        const editS = document.getElementById('editSeconds');
-        const editC = document.getElementById('editColor');
-        const applyBtn = document.getElementById('applySettings');
-        const resetBtn = document.getElementById('resetTimer');
+    // Double-click reset position
+    wrapper.addEventListener("dblclick", function() {
+        wrapper.style.left = "50%";
+        wrapper.style.top = "50%";
+        wrapper.style.transform = "translate(-50%, -50%) scale(1)";
+        wrapper.dataset.scale = 1;
+        isPositioned = false;
+        wrapper.classList.remove("dragging");
+        isDragging = false;
+        isResizing = false;
+        measureNaturalSize();
+    });
+    wrapper.addEventListener("contextmenu", e => e.preventDefault());
 
-        function openSettings() {
-            editH.value = hours; editM.value = minutes; editS.value = seconds;
-            editC.value = currentColor;
-            panel.style.display = 'block';
-            overlay.style.display = 'block';
-        }
-        function closeSettings() {
-            panel.style.display = 'none';
-            overlay.style.display = 'none';
-        }
-        settingsBtn.addEventListener('click', openSettings);
-        closePanel.addEventListener('click', closeSettings);
-        overlay.addEventListener('click', closeSettings);
+    // ============================================================
+    // SETTINGS PANEL CONTROLS
+    // ============================================================
+    const settingsBtn = document.getElementById('settingsBtn');
+    const panel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('overlay');
+    const closePanel = document.getElementById('closePanel');
+    const editH = document.getElementById('editHours');
+    const editM = document.getElementById('editMinutes');
+    const editS = document.getElementById('editSeconds');
+    const editC = document.getElementById('editColor');
+    const applyBtn = document.getElementById('applySettings');
+    const resetBtn = document.getElementById('resetTimer');
 
-        applyBtn.addEventListener('click', function () {
-            const h = parseInt(editH.value) || 0;
-            const m = parseInt(editM.value) || 0;
-            const s = parseInt(editS.value) || 0;
-            applyColorToAll(editC.value);
-            setTime(h, m, s, false);
-            closeSettings();
-        });
-        resetBtn.addEventListener('click', function () {
-            applyColorToAll('#000000');
-            setTime(0, 5, 0, false);
-            closeSettings();
-        });
+    function openSettings() {
+        editH.value = hours; editM.value = minutes; editS.value = seconds;
+        editC.value = currentColor;
+        // reflect current show/hide state
+        showTimerCheck.checked = timerWrapper.style.display !== 'none';
+        panel.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+    function closeSettings() {
+        panel.style.display = 'none';
+        overlay.style.display = 'none';
+    }
+    settingsBtn.addEventListener('click', openSettings);
+    closePanel.addEventListener('click', closeSettings);
+    overlay.addEventListener('click', closeSettings);
 
-        console.log("✅ Timer ready – uses local setting.png, background picker added.");
-    </script>
+    applyBtn.addEventListener('click', function() {
+        const h = parseInt(editH.value) || 0;
+        const m = parseInt(editM.value) || 0;
+        const s = parseInt(editS.value) || 0;
+        applyColorToAll(editC.value);
+        setTime(h, m, s, false);
+        closeSettings();
+    });
+    resetBtn.addEventListener('click', function() {
+        applyColorToAll('#000000');
+        setTime(0, 5, 0, false);
+        closeSettings();
+    });
+
+    console.log("✅ Timer with Show/Hide toggle – ready.");
+</script>
 
 </body>
-
 </html>
