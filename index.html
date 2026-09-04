@@ -162,7 +162,7 @@
             background: #666;
         }
         #settingsPanel .row button:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: default;
         }
         #settingsPanel .close-panel {
@@ -183,8 +183,7 @@
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            transform-origin: top left;
+            transform: translate(-50%, -50%);
             background: transparent;
             user-select: none;
             cursor: grab;
@@ -194,6 +193,7 @@
         }
         .timer-wrapper.dragging { cursor: grabbing; }
 
+        /* ---------- TIMER – fixed width, centered items ---------- */
         .timer {
             display: flex;
             align-items: center;
@@ -201,11 +201,13 @@
             gap: 8px;
             background: transparent;
             white-space: nowrap;
+            /* width is set dynamically via JS to keep it constant */
         }
         .group {
             display: flex;
             gap: 2px;
             background: transparent;
+            flex-shrink: 0;
         }
         .separator {
             color: #000;
@@ -215,6 +217,7 @@
             background: transparent;
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
         .digit {
             position: relative;
@@ -222,6 +225,7 @@
             height: 100px;
             overflow: hidden;
             background: transparent;
+            flex-shrink: 0;
         }
         .number {
             position: absolute;
@@ -380,13 +384,12 @@
     // TIMER LOGIC
     // ============================================================
     let currentColor = '#000000';
-    // Base time (set by user)
     let hours = 0, minutes = 5, seconds = 0;
-    // Current remaining time (changes during countdown)
     let remaining = hours * 3600 + minutes * 60 + seconds;
 
     let timerIntervalId = null;
     let isRunning = false;
+    let fullTimerWidth = null; // cached full width
 
     const digits = {
         h1: document.getElementById("h1"),
@@ -397,6 +400,12 @@
         s2: document.getElementById("s2"),
     };
     let current = ["0","0","5","0","0","0"];
+
+    const timerEl = document.getElementById('timer');
+    const hoursGroup = document.getElementById('hoursGroup');
+    const minutesGroup = document.getElementById('minutesGroup');
+    const sep1 = document.getElementById('sep1');
+    const sep2 = document.getElementById('sep2');
 
     function createNumber(value) {
         const el = document.createElement("div");
@@ -444,7 +453,7 @@
         }, 350);
     }
 
-    // Hard set (no animation) – for settings apply & tab visibility fix
+    // Hard set (no animation)
     function hardSetDisplay() {
         const values = getValues();
         const keys = Object.keys(digits);
@@ -458,7 +467,7 @@
             element.appendChild(num);
         });
         current = values;
-        updateVisibility();
+        updateVisibilityAndWidth();
         measureNaturalSize();
     }
 
@@ -480,17 +489,52 @@
             slideDigit(digits[key], current[i], values[i]);
         });
         current = values;
-        updateVisibility();
+        updateVisibilityAndWidth();
         measureNaturalSize();
     }
 
-    function updateVisibility() {
+    // ---------- CENTERING FIX: fixed width + display:none ----------
+    function updateVisibilityAndWidth() {
         const h = Math.floor(remaining / 3600);
         const m = Math.floor((remaining % 3600) / 60);
-        document.getElementById('hoursGroup').style.display = (h > 0) ? 'flex' : 'none';
-        document.getElementById('sep1').style.display = (h > 0) ? 'flex' : 'none';
-        document.getElementById('minutesGroup').style.display = (h > 0 || m > 0) ? 'flex' : 'none';
-        document.getElementById('sep2').style.display = (h > 0 || m > 0) ? 'flex' : 'none';
+
+        const showHours = h > 0;
+        const showMinutes = h > 0 || m > 0;
+
+        // Hide/show using display:none
+        hoursGroup.style.display = showHours ? 'flex' : 'none';
+        sep1.style.display = showHours ? 'flex' : 'none';
+        minutesGroup.style.display = showMinutes ? 'flex' : 'none';
+        sep2.style.display = showMinutes ? 'flex' : 'none';
+
+        // Ensure seconds group is always visible
+        document.getElementById('secondsGroup').style.display = 'flex';
+
+        // Set fixed width so the container stays the same size
+        // and centered items get equal blank space on both sides
+        if (fullTimerWidth === null) {
+            // Measure full width: temporarily show all items
+            const origDisplay = {
+                hours: hoursGroup.style.display,
+                sep1: sep1.style.display,
+                minutes: minutesGroup.style.display,
+                sep2: sep2.style.display,
+            };
+            hoursGroup.style.display = 'flex';
+            sep1.style.display = 'flex';
+            minutesGroup.style.display = 'flex';
+            sep2.style.display = 'flex';
+            // Force reflow
+            void timerEl.offsetWidth;
+            fullTimerWidth = timerEl.scrollWidth;
+            // Restore
+            hoursGroup.style.display = origDisplay.hours;
+            sep1.style.display = origDisplay.sep1;
+            minutesGroup.style.display = origDisplay.minutes;
+            sep2.style.display = origDisplay.sep2;
+        }
+
+        timerEl.style.width = fullTimerWidth + 'px';
     }
 
     function applyColorToAll(color) {
@@ -498,7 +542,6 @@
         document.querySelectorAll('.number, .separator').forEach(el => el.style.color = color);
     }
 
-    // Set base time (hours, minutes, seconds) and update remaining & display
     function setBaseTime(h, m, s, animate = true) {
         hours = Math.min(99, Math.max(0, h));
         minutes = Math.min(59, Math.max(0, m));
@@ -506,40 +549,26 @@
         remaining = hours * 3600 + minutes * 60 + seconds;
         if (animate) updateDisplay();
         else hardSetDisplay();
-        // If running, stop? We'll keep running state as is, but we can pause if needed.
-        // It's safer to pause when base time changes to avoid unexpected behavior.
-        if (isRunning) {
-            pauseTimer();
-        }
+        if (isRunning) pauseTimer();
     }
 
-    // Reset to base time (stop timer)
     function resetToBase() {
         if (isRunning) pauseTimer();
         remaining = hours * 3600 + minutes * 60 + seconds;
         hardSetDisplay();
-        // update visibility
-        updateVisibility();
     }
 
-    // Timer control functions
+    // ---------- Timer Controls ----------
     function startTimer() {
         if (isRunning) return;
-        if (remaining <= 0) {
-            // If at zero, reset to base first?
-            resetToBase();
-        }
+        if (remaining <= 0) resetToBase();
         isRunning = true;
         timerIntervalId = setInterval(() => {
             if (remaining > 0) {
                 remaining--;
                 updateDisplay();
-                if (remaining === 0) {
-                    // Timer reached zero – auto‑pause
-                    pauseTimer();
-                }
+                if (remaining === 0) pauseTimer();
             } else {
-                // Should not happen, but safety
                 pauseTimer();
             }
         }, 1000);
@@ -570,13 +599,13 @@
         resetBtn.disabled = false;
     }
 
-    // Init display
+    // ---------- Init ----------
     const initValues = getValues();
     const keys = Object.keys(digits);
     keys.forEach((key, i) => initializeDigit(digits[key], initValues[i]));
     current = initValues;
-    updateVisibility();
-    // Timer is stopped initially
+    // Measure full width and set initial visibility
+    updateVisibilityAndWidth();
     pauseTimer();
 
     // Fix overlap on tab switch
@@ -593,7 +622,6 @@
     const timerWrapper = document.getElementById('timerWrapper');
     const showTimerCheck = document.getElementById('showTimerCheck');
 
-    // On load, apply checkbox state (unchecked by default → hidden)
     if (!showTimerCheck.checked) {
         timerWrapper.style.display = 'none';
     }
@@ -620,7 +648,7 @@
     });
 
     // ============================================================
-    // DRAG & RESIZE LOGIC (condensed)
+    // DRAG & RESIZE LOGIC
     // ============================================================
     const wrapper = document.getElementById("timerWrapper");
     let isDragging = false, isPositioned = false, offsetX = 0, offsetY = 0;
@@ -863,7 +891,6 @@
     closePanel.addEventListener('click', closeSettings);
     overlay.addEventListener('click', closeSettings);
 
-    // Apply Time & Color
     applyBtn.addEventListener('click', function() {
         const h = parseInt(editH.value) || 0;
         const m = parseInt(editM.value) || 0;
@@ -873,33 +900,19 @@
         closeSettings();
     });
 
-    // Reset to 5:00 (also resets color)
     resetToFiveBtn.addEventListener('click', function() {
         applyColorToAll('#000000');
         setBaseTime(0, 5, 0, false);
         closeSettings();
     });
 
-    // Timer Controls
-    startBtn.addEventListener('click', function() {
-        startTimer();
-        // Keep settings open or close? We'll keep open so user can pause/reset.
-        // But we might want to close? Better to leave open.
-        updateButtons();
-    });
-    pauseBtn.addEventListener('click', function() {
-        pauseTimer();
-        updateButtons();
-    });
-    resetBtnCtrl.addEventListener('click', function() {
-        resetTimer();
-        updateButtons();
-    });
+    startBtn.addEventListener('click', function() { startTimer(); updateButtons(); });
+    pauseBtn.addEventListener('click', function() { pauseTimer(); updateButtons(); });
+    resetBtnCtrl.addEventListener('click', function() { resetTimer(); updateButtons(); });
 
-    // Initialize button states
     updateButtons();
 
-    console.log("✅ Timer with Start/Pause/Reset controls – ready.");
+    console.log("✅ Timer centered |hh-mm-ss| → |b-mm-ss-b| → |bb-ss-bb|");
 </script>
 
 </body>
