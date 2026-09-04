@@ -27,7 +27,7 @@
             pointer-events: none;
         }
 
-        /* ---------- SETTINGS BUTTON (using setting.png) ---------- */
+        /* ---------- SETTINGS BUTTON ---------- */
         .settings-btn {
             position: fixed;
             top: 20px;
@@ -160,6 +160,10 @@
         }
         #settingsPanel .row button:hover {
             background: #666;
+        }
+        #settingsPanel .row button:disabled {
+            opacity: 0.5;
+            cursor: default;
         }
         #settingsPanel .close-panel {
             background: transparent;
@@ -355,9 +359,17 @@
                 <input type="checkbox" id="showTimerCheck" />
             </label>
         </div>
+
+        <!-- Timer Controls: Start, Pause, Reset -->
+        <div class="row" style="margin-top:12px; gap:10px; justify-content:center;">
+            <button id="startBtn">▶ Start</button>
+            <button id="pauseBtn">⏸ Pause</button>
+            <button id="resetBtn">⏹ Reset</button>
+        </div>
+
         <div class="row" style="margin-top:18px;">
             <button id="applySettings">Apply Time & Color</button>
-            <button id="resetTimer">Reset to 5:00</button>
+            <button id="resetToFive">Reset to 5:00</button>
         </div>
     </div>
 
@@ -368,8 +380,13 @@
     // TIMER LOGIC
     // ============================================================
     let currentColor = '#000000';
+    // Base time (set by user)
     let hours = 0, minutes = 5, seconds = 0;
+    // Current remaining time (changes during countdown)
     let remaining = hours * 3600 + minutes * 60 + seconds;
+
+    let timerIntervalId = null;
+    let isRunning = false;
 
     const digits = {
         h1: document.getElementById("h1"),
@@ -481,29 +498,86 @@
         document.querySelectorAll('.number, .separator').forEach(el => el.style.color = color);
     }
 
-    function setTime(h, m, s, animate = true) {
+    // Set base time (hours, minutes, seconds) and update remaining & display
+    function setBaseTime(h, m, s, animate = true) {
         hours = Math.min(99, Math.max(0, h));
         minutes = Math.min(59, Math.max(0, m));
         seconds = Math.min(59, Math.max(0, s));
         remaining = hours * 3600 + minutes * 60 + seconds;
         if (animate) updateDisplay();
         else hardSetDisplay();
+        // If running, stop? We'll keep running state as is, but we can pause if needed.
+        // It's safer to pause when base time changes to avoid unexpected behavior.
+        if (isRunning) {
+            pauseTimer();
+        }
     }
 
-    // Init
+    // Reset to base time (stop timer)
+    function resetToBase() {
+        if (isRunning) pauseTimer();
+        remaining = hours * 3600 + minutes * 60 + seconds;
+        hardSetDisplay();
+        // update visibility
+        updateVisibility();
+    }
+
+    // Timer control functions
+    function startTimer() {
+        if (isRunning) return;
+        if (remaining <= 0) {
+            // If at zero, reset to base first?
+            resetToBase();
+        }
+        isRunning = true;
+        timerIntervalId = setInterval(() => {
+            if (remaining > 0) {
+                remaining--;
+                updateDisplay();
+                if (remaining === 0) {
+                    // Timer reached zero – auto‑pause
+                    pauseTimer();
+                }
+            } else {
+                // Should not happen, but safety
+                pauseTimer();
+            }
+        }, 1000);
+        updateButtons();
+    }
+
+    function pauseTimer() {
+        if (timerIntervalId) {
+            clearInterval(timerIntervalId);
+            timerIntervalId = null;
+        }
+        isRunning = false;
+        updateButtons();
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        resetToBase();
+        updateButtons();
+    }
+
+    function updateButtons() {
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        startBtn.disabled = isRunning || (remaining <= 0);
+        pauseBtn.disabled = !isRunning;
+        resetBtn.disabled = false;
+    }
+
+    // Init display
     const initValues = getValues();
     const keys = Object.keys(digits);
     keys.forEach((key, i) => initializeDigit(digits[key], initValues[i]));
     current = initValues;
     updateVisibility();
-
-    // Countdown
-    setInterval(() => {
-        if (remaining > 0) {
-            remaining--;
-            updateDisplay();
-        }
-    }, 1000);
+    // Timer is stopped initially
+    pauseTimer();
 
     // Fix overlap on tab switch
     document.addEventListener('visibilitychange', function() {
@@ -519,7 +593,7 @@
     const timerWrapper = document.getElementById('timerWrapper');
     const showTimerCheck = document.getElementById('showTimerCheck');
 
-    // On load, apply checkbox state
+    // On load, apply checkbox state (unchecked by default → hidden)
     if (!showTimerCheck.checked) {
         timerWrapper.style.display = 'none';
     }
@@ -546,7 +620,7 @@
     });
 
     // ============================================================
-    // DRAG & RESIZE LOGIC (condensed for readability)
+    // DRAG & RESIZE LOGIC (condensed)
     // ============================================================
     const wrapper = document.getElementById("timerWrapper");
     let isDragging = false, isPositioned = false, offsetX = 0, offsetY = 0;
@@ -768,15 +842,18 @@
     const editS = document.getElementById('editSeconds');
     const editC = document.getElementById('editColor');
     const applyBtn = document.getElementById('applySettings');
-    const resetBtn = document.getElementById('resetTimer');
+    const resetToFiveBtn = document.getElementById('resetToFive');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtnCtrl = document.getElementById('resetBtn');
 
     function openSettings() {
         editH.value = hours; editM.value = minutes; editS.value = seconds;
         editC.value = currentColor;
-        // reflect current show/hide state
         showTimerCheck.checked = timerWrapper.style.display !== 'none';
         panel.style.display = 'block';
         overlay.style.display = 'block';
+        updateButtons();
     }
     function closeSettings() {
         panel.style.display = 'none';
@@ -786,21 +863,43 @@
     closePanel.addEventListener('click', closeSettings);
     overlay.addEventListener('click', closeSettings);
 
+    // Apply Time & Color
     applyBtn.addEventListener('click', function() {
         const h = parseInt(editH.value) || 0;
         const m = parseInt(editM.value) || 0;
         const s = parseInt(editS.value) || 0;
         applyColorToAll(editC.value);
-        setTime(h, m, s, false);
-        closeSettings();
-    });
-    resetBtn.addEventListener('click', function() {
-        applyColorToAll('#000000');
-        setTime(0, 5, 0, false);
+        setBaseTime(h, m, s, false);
         closeSettings();
     });
 
-    console.log("✅ Timer with Show/Hide toggle – ready.");
+    // Reset to 5:00 (also resets color)
+    resetToFiveBtn.addEventListener('click', function() {
+        applyColorToAll('#000000');
+        setBaseTime(0, 5, 0, false);
+        closeSettings();
+    });
+
+    // Timer Controls
+    startBtn.addEventListener('click', function() {
+        startTimer();
+        // Keep settings open or close? We'll keep open so user can pause/reset.
+        // But we might want to close? Better to leave open.
+        updateButtons();
+    });
+    pauseBtn.addEventListener('click', function() {
+        pauseTimer();
+        updateButtons();
+    });
+    resetBtnCtrl.addEventListener('click', function() {
+        resetTimer();
+        updateButtons();
+    });
+
+    // Initialize button states
+    updateButtons();
+
+    console.log("✅ Timer with Start/Pause/Reset controls – ready.");
 </script>
 
 </body>
